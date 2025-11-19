@@ -5,12 +5,15 @@ import java.util.UUID;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.smartlogis.common.domain.AbstractEntity;
+import com.smartlogis.companyservice.dto.request.CreateCompanyRequest;
 import com.smartlogis.companyservice.exception.CompanyCode;
 import com.smartlogis.companyservice.exception.CompanyException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,6 +43,7 @@ public class Company extends AbstractEntity {
 
 	// 업체 타입(CompanyType)
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	private CompanyType type;
 
 	// 소속 허브 ID
@@ -52,6 +56,7 @@ public class Company extends AbstractEntity {
 
 	// 업체 상태(CompanyStatus)
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	private CompanyStatus status;
 
 	// 업체 담당자 ID
@@ -64,7 +69,7 @@ public class Company extends AbstractEntity {
 	// 업체 상태를 비활성 -> 활성
 	public void activate(){
 		if(this.status == CompanyStatus.ACTIVE){
-			throw new CompanyException(CompanyCode.INVALID_STATUS_CHANGE);
+			return;
 		}
 		this.status = CompanyStatus.ACTIVE;
 	}
@@ -72,9 +77,28 @@ public class Company extends AbstractEntity {
 	// 업체 상태를 활성 -> 비활성
 	public void inactivate(){
 		if(this.status == CompanyStatus.INACTIVE){
-			throw new CompanyException(CompanyCode.INVALID_STATUS_CHANGE);
+			return;
 		}
 		this.status = CompanyStatus.INACTIVE;
+	}
+
+	public void updateStatus(CompanyStatus newStatus) {
+		if (newStatus == null) {
+			throw new CompanyException(CompanyCode.INVALID_STATUS);
+		}
+
+		if (this.status == newStatus) {
+			return;
+		}
+
+		this.status = newStatus;
+	}
+
+	// 업체 삭제 시 업체 상태 비활성화
+	@Override
+	public void delete(){
+		super.delete();
+		this.inactivate();
 	}
 
 	//======================================
@@ -96,7 +120,7 @@ public class Company extends AbstractEntity {
 	public void changeType(CompanyType newType){
 		validateType(newType);
 		if(this.type == newType){
-			throw new CompanyException(CompanyCode.INVALID_STATUS_CHANGE);
+			return;
 		}
 		this.type = newType;
 	}
@@ -172,4 +196,15 @@ public class Company extends AbstractEntity {
 			.managerId(managerId)
 			.build();
 	}
+
+	public static Company create(CreateCompanyRequest request){
+		return create(
+			request.getName(),
+			request.getType(),
+			request.getHubId(),
+			request.getAddress(),
+			request.getManagerId()
+		);
+	}
+
 }
