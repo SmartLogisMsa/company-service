@@ -1,4 +1,4 @@
-package com.smartlogis.companyservice.repository;
+package com.smartlogis.companyservice.domain.repository;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import org.springframework.data.domain.Pageable;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.smartlogis.companyservice.dto.request.CompanySearchCondition;
-import com.smartlogis.companyservice.entity.Company;
-import com.smartlogis.companyservice.entity.QCompany;
+import com.smartlogis.companyservice.interfaces.dto.request.CompanySearchCondition;
+import com.smartlogis.companyservice.domain.entity.Company;
+import com.smartlogis.companyservice.domain.entity.QCompany;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,10 +1,10 @@
-package com.smartlogis.companyservice.dto.response;
+package com.smartlogis.companyservice.interfaces.dto.response;
 
 import java.util.UUID;
 
-import com.smartlogis.companyservice.entity.Company;
-import com.smartlogis.companyservice.entity.CompanyStatus;
-import com.smartlogis.companyservice.entity.CompanyType;
+import com.smartlogis.companyservice.domain.entity.Company;
+import com.smartlogis.companyservice.domain.entity.CompanyStatus;
+import com.smartlogis.companyservice.domain.entity.CompanyType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

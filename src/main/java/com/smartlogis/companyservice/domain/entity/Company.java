@@ -1,13 +1,18 @@
-package com.smartlogis.companyservice.entity;
+package com.smartlogis.companyservice.domain.entity;
 
 import java.util.UUID;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.smartlogis.common.domain.AbstractEntity;
-import com.smartlogis.companyservice.dto.request.CreateCompanyRequest;
-import com.smartlogis.companyservice.exception.CompanyCode;
-import com.smartlogis.companyservice.exception.CompanyException;
+import com.smartlogis.companyservice.interfaces.dto.request.CreateCompanyRequest;
+import com.smartlogis.companyservice.domain.exception.CompanyCode;
+import com.smartlogis.companyservice.domain.exception.InvalidAddressException;
+import com.smartlogis.companyservice.domain.exception.InvalidHubIdException;
+import com.smartlogis.companyservice.domain.exception.InvalidManagerIdException;
+import com.smartlogis.companyservice.domain.exception.InvalidNameException;
+import com.smartlogis.companyservice.domain.exception.InvalidStatusException;
+import com.smartlogis.companyservice.domain.exception.InvalidTypeException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -84,7 +89,7 @@ public class Company extends AbstractEntity {
 
 	public void updateStatus(CompanyStatus newStatus) {
 		if (newStatus == null) {
-			throw new CompanyException(CompanyCode.INVALID_STATUS);
+			throw new InvalidStatusException(CompanyCode.INVALID_STATUS);
 		}
 
 		if (this.status == newStatus) {
@@ -143,35 +148,35 @@ public class Company extends AbstractEntity {
 	// 업체명 검증
 	private static void validateName(String name) {
 		if (name == null || name.isBlank()) {
-			throw new CompanyException(CompanyCode.INVALID_NAME);
+			throw new InvalidNameException(CompanyCode.INVALID_NAME);
 		}
 	}
 
 	// 주소 검증
 	private static void validateAddress(String address) {
 		if (address == null || address.isBlank()) {
-			throw new CompanyException(CompanyCode.INVALID_ADDRESS);
+			throw new InvalidAddressException(CompanyCode.INVALID_ADDRESS);
 		}
 	}
 
 	// 업체 타입 검증
 	private static void validateType(CompanyType type) {
 		if (type == null) {
-			throw new CompanyException(CompanyCode.INVALID_TYPE);
+			throw new InvalidTypeException(CompanyCode.INVALID_TYPE);
 		}
 	}
 
 	//허브 아이디 검증
 	private static void validateHubId(UUID hubId) {
 		if(hubId == null) {
-			throw new CompanyException(CompanyCode.INVALID_HUBID);
+			throw new InvalidHubIdException(CompanyCode.INVALID_HUBID);
 		}
 	}
 
 	//담당자 아이디 검증
 	private static void validateManagerId(UUID managerId) {
 		if(managerId == null) {
-			throw new CompanyException(CompanyCode.INVALID_MANAGERID);
+			throw new InvalidManagerIdException(CompanyCode.INVALID_MANAGERID);
 		}
 	}
 

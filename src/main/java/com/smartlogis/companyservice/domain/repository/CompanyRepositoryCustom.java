@@ -1,11 +1,10 @@
-package com.smartlogis.companyservice.repository;
+package com.smartlogis.companyservice.domain.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.smartlogis.companyservice.dto.request.CompanySearchCondition;
-import com.smartlogis.companyservice.dto.response.CompanyListResponse;
-import com.smartlogis.companyservice.entity.Company;
+import com.smartlogis.companyservice.interfaces.dto.request.CompanySearchCondition;
+import com.smartlogis.companyservice.domain.entity.Company;
 
 public interface CompanyRepositoryCustom {
 

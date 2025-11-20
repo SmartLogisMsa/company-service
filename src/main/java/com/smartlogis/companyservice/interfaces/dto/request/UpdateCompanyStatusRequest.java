@@ -1,6 +1,6 @@
-package com.smartlogis.companyservice.dto.request;
+package com.smartlogis.companyservice.interfaces.dto.request;
 
-import com.smartlogis.companyservice.entity.CompanyStatus;
+import com.smartlogis.companyservice.domain.entity.CompanyStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

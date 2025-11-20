@@ -1,4 +1,4 @@
-package com.smartlogis.companyservice.exception;
+package com.smartlogis.companyservice.domain.exception;
 
 import org.springframework.http.HttpStatus;
 
@@ -12,6 +12,7 @@ public enum CompanyCode implements MessageCode {
 	INVALID_HUBID("COMPANY.INVALID_HUBID", HttpStatus.BAD_REQUEST),
 	INVALID_MANAGERID("COMPANY.INVALID_MANAGERID", HttpStatus.BAD_REQUEST),
 	CompanyNotFound("COMPANY.NOT_FOUND", HttpStatus.NOT_FOUND),
+	CompanyAlreadyExist("COMPANY.ALREADY_EXIST", HttpStatus.CONFLICT),
 	;
 
 	private final String code;
