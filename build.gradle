@@ -31,7 +31,7 @@ ext {
 }
 
 dependencies {
-    implementation 'com.github.smartlogismsa:common-module:0.0.6'
+    implementation 'com.github.smartlogismsa:common-module:v0.0.10'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
