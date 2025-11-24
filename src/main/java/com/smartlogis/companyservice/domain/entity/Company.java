@@ -1,16 +1,24 @@
-package com.smartlogis.companyservice.entity;
+package com.smartlogis.companyservice.domain.entity;
 
 import java.util.UUID;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.smartlogis.common.domain.AbstractEntity;
-import com.smartlogis.companyservice.exception.CompanyCode;
-import com.smartlogis.companyservice.exception.CompanyException;
+import com.smartlogis.companyservice.interfaces.dto.request.CreateCompanyRequest;
+import com.smartlogis.companyservice.domain.exception.CompanyCode;
+import com.smartlogis.companyservice.domain.exception.InvalidAddressException;
+import com.smartlogis.companyservice.domain.exception.InvalidHubIdException;
+import com.smartlogis.companyservice.domain.exception.InvalidManagerIdException;
+import com.smartlogis.companyservice.domain.exception.InvalidNameException;
+import com.smartlogis.companyservice.domain.exception.InvalidStatusException;
+import com.smartlogis.companyservice.domain.exception.InvalidTypeException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,6 +48,7 @@ public class Company extends AbstractEntity {
 
 	// 업체 타입(CompanyType)
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	private CompanyType type;
 
 	// 소속 허브 ID
@@ -52,6 +61,7 @@ public class Company extends AbstractEntity {
 
 	// 업체 상태(CompanyStatus)
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	private CompanyStatus status;
 
 	// 업체 담당자 ID
@@ -64,7 +74,7 @@ public class Company extends AbstractEntity {
 	// 업체 상태를 비활성 -> 활성
 	public void activate(){
 		if(this.status == CompanyStatus.ACTIVE){
-			throw new CompanyException(CompanyCode.INVALID_STATUS_CHANGE);
+			return;
 		}
 		this.status = CompanyStatus.ACTIVE;
 	}
@@ -72,9 +82,28 @@ public class Company extends AbstractEntity {
 	// 업체 상태를 활성 -> 비활성
 	public void inactivate(){
 		if(this.status == CompanyStatus.INACTIVE){
-			throw new CompanyException(CompanyCode.INVALID_STATUS_CHANGE);
+			return;
 		}
 		this.status = CompanyStatus.INACTIVE;
+	}
+
+	public void updateStatus(CompanyStatus newStatus) {
+		if (newStatus == null) {
+			throw new InvalidStatusException(CompanyCode.INVALID_STATUS);
+		}
+
+		if (this.status == newStatus) {
+			return;
+		}
+
+		this.status = newStatus;
+	}
+
+	// 업체 삭제 시 업체 상태 비활성화
+	@Override
+	public void delete(){
+		super.delete();
+		this.inactivate();
 	}
 
 	//======================================
@@ -96,7 +125,7 @@ public class Company extends AbstractEntity {
 	public void changeType(CompanyType newType){
 		validateType(newType);
 		if(this.type == newType){
-			throw new CompanyException(CompanyCode.INVALID_STATUS_CHANGE);
+			return;
 		}
 		this.type = newType;
 	}
@@ -119,35 +148,35 @@ public class Company extends AbstractEntity {
 	// 업체명 검증
 	private static void validateName(String name) {
 		if (name == null || name.isBlank()) {
-			throw new CompanyException(CompanyCode.INVALID_NAME);
+			throw new InvalidNameException(CompanyCode.INVALID_NAME);
 		}
 	}
 
 	// 주소 검증
 	private static void validateAddress(String address) {
 		if (address == null || address.isBlank()) {
-			throw new CompanyException(CompanyCode.INVALID_ADDRESS);
+			throw new InvalidAddressException(CompanyCode.INVALID_ADDRESS);
 		}
 	}
 
 	// 업체 타입 검증
 	private static void validateType(CompanyType type) {
 		if (type == null) {
-			throw new CompanyException(CompanyCode.INVALID_TYPE);
+			throw new InvalidTypeException(CompanyCode.INVALID_TYPE);
 		}
 	}
 
 	//허브 아이디 검증
 	private static void validateHubId(UUID hubId) {
 		if(hubId == null) {
-			throw new CompanyException(CompanyCode.INVALID_HUBID);
+			throw new InvalidHubIdException(CompanyCode.INVALID_HUBID);
 		}
 	}
 
 	//담당자 아이디 검증
 	private static void validateManagerId(UUID managerId) {
 		if(managerId == null) {
-			throw new CompanyException(CompanyCode.INVALID_MANAGERID);
+			throw new InvalidManagerIdException(CompanyCode.INVALID_MANAGERID);
 		}
 	}
 
@@ -172,4 +201,15 @@ public class Company extends AbstractEntity {
 			.managerId(managerId)
 			.build();
 	}
+
+	public static Company create(CreateCompanyRequest request){
+		return create(
+			request.getName(),
+			request.getType(),
+			request.getHubId(),
+			request.getAddress(),
+			request.getManagerId()
+		);
+	}
+
 }
