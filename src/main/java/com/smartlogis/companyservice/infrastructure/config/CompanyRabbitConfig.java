@@ -31,6 +31,10 @@ public class CompanyRabbitConfig {
 	public static final String COMPANY_INACTIVATED_EXCHANGE = "smartlogis.company.inactivated.exchange";
 	public static final String COMPANY_INACTIVATED_ROUTING_KEY = "smartlogis.company.inactivated";
 
+	//업체 상태 변경 이벤트
+	public static final String COMPANY_STATUS_CHANGED_EXCHANGE = "smartlogis.company.status.changed.exchange";
+	public static final String COMPANY_STATUS_CHANGED_ROUTING_KEY = "smartlogis.company.status.changed";
+
 	@Bean
 	public Queue orderCreatedQueue() {
 		return new Queue(ORDER_CREATED_QUEUE, true);
@@ -64,6 +68,11 @@ public class CompanyRabbitConfig {
 	@Bean
 	public TopicExchange companyInactivatedExchange() {
 		return new TopicExchange(COMPANY_INACTIVATED_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public TopicExchange companyStatusChangedExchange() {
+		return new TopicExchange(COMPANY_STATUS_CHANGED_EXCHANGE, true, false);
 	}
 
 	@Bean

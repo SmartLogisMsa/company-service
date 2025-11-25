@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyInactivatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyOrderCreatedEvent;
+import com.smartlogis.companyservice.interfaces.dto.event.CompanyStatusChangedEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,14 @@ public class CompanyEventPublisher {
 		rabbitTemplate.convertAndSend(
 			COMPANY_INACTIVATED_EXCHANGE,
 			COMPANY_INACTIVATED_ROUTING_KEY,
+			event
+		);
+	}
+
+	public void publishStatusChanged(CompanyStatusChangedEvent event) {
+		rabbitTemplate.convertAndSend(
+			COMPANY_STATUS_CHANGED_EXCHANGE,
+			COMPANY_STATUS_CHANGED_ROUTING_KEY,
 			event
 		);
 	}

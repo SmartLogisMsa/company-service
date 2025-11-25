@@ -12,6 +12,7 @@ import com.smartlogis.common.presentation.dto.PageResponse;
 import com.smartlogis.companyservice.infrastructure.event.publisher.CompanyEventPublisher;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyInactivatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyOrderCreatedEvent;
+import com.smartlogis.companyservice.interfaces.dto.event.CompanyStatusChangedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.HubDeletedMessage;
 import com.smartlogis.companyservice.interfaces.dto.event.OrderCreatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.request.ChangeCompanyManager;
@@ -112,6 +113,13 @@ public class CompanyService {
 			.orElseThrow(() -> new CompanyNotFoundException(CompanyCode.CompanyNotFound));
 
 		company.updateStatus(request.getStatus());
+
+		//업체 상태에 따라 상품도 상태 바뀌도록 이벤트 발행
+		CompanyStatusChangedEvent event = new CompanyStatusChangedEvent(
+			company.getId(), request.getStatus().name()
+		);
+
+		companyEventPublisher.publishStatusChanged(event);
 
 		return CompanyResponse.of(company);
 	}
