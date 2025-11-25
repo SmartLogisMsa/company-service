@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.smartlogis.common.presentation.dto.PageResponse;
 import com.smartlogis.companyservice.infrastructure.event.publisher.CompanyEventPublisher;
+import com.smartlogis.companyservice.interfaces.dto.event.CompanyHubChangeEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyInactivatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyOrderCreatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyStatusChangedEvent;
@@ -92,12 +93,29 @@ public class CompanyService {
 		Company company = companyRepository.findById(id)
 			.orElseThrow(() -> new CompanyNotFoundException(CompanyCode.CompanyNotFound));
 
+		UUID previousHubId = company.getHubId();
+
 		if(request.getName() != null){
 			company.changeName(request.getName());
 		}
 
 		if(request.getAddress() != null){
 			company.changeAddress(request.getAddress());
+		}
+
+		if(request.getHubId() != null){
+			company.changeHub(request.getHubId());
+		}
+
+		UUID newHubId = request.getHubId();
+
+		if(!previousHubId.equals(newHubId)){
+			//허브 변경 이벤트 발행
+			CompanyHubChangeEvent event = new CompanyHubChangeEvent(
+				company.getId(),
+				company.getHubId()
+			);
+			companyEventPublisher.publishChangedHubId(event);
 		}
 
 		return CompanyResponse.of(company);

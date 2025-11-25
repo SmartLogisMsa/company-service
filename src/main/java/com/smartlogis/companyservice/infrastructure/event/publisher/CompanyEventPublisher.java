@@ -5,6 +5,7 @@ import static com.smartlogis.companyservice.infrastructure.config.CompanyRabbitC
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
+import com.smartlogis.companyservice.interfaces.dto.event.CompanyHubChangeEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyInactivatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyOrderCreatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyStatusChangedEvent;
@@ -37,6 +38,14 @@ public class CompanyEventPublisher {
 		rabbitTemplate.convertAndSend(
 			COMPANY_STATUS_CHANGED_EXCHANGE,
 			COMPANY_STATUS_CHANGED_ROUTING_KEY,
+			event
+		);
+	}
+
+	public void publishChangedHubId(CompanyHubChangeEvent event) {
+		rabbitTemplate.convertAndSend(
+			COMPANY_HUB_CHANGED_EXCHANGE,
+			COMPANY_HUB_CHANGED_ROUTING_KEY,
 			event
 		);
 	}

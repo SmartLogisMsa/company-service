@@ -35,6 +35,11 @@ public class CompanyRabbitConfig {
 	public static final String COMPANY_STATUS_CHANGED_EXCHANGE = "smartlogis.company.status.changed.exchange";
 	public static final String COMPANY_STATUS_CHANGED_ROUTING_KEY = "smartlogis.company.status.changed";
 
+	//업체 허브 변경 이벤트
+	public static final String COMPANY_HUB_CHANGED_EXCHANGE = "smartlogis.company.hubId.changed.exchange";
+	public static final String COMPANY_HUB_CHANGED_ROUTING_KEY = "smartlogis.company.hubId.changed";
+
+
 	@Bean
 	public Queue orderCreatedQueue() {
 		return new Queue(ORDER_CREATED_QUEUE, true);
@@ -73,6 +78,11 @@ public class CompanyRabbitConfig {
 	@Bean
 	public TopicExchange companyStatusChangedExchange() {
 		return new TopicExchange(COMPANY_STATUS_CHANGED_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public TopicExchange companyHubChangedExchange() {
+		return new TopicExchange(COMPANY_HUB_CHANGED_EXCHANGE, true, false);
 	}
 
 	@Bean

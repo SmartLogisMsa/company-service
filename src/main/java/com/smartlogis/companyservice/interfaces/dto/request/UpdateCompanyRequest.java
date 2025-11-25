@@ -1,5 +1,7 @@
 package com.smartlogis.companyservice.interfaces.dto.request;
 
+import java.util.UUID;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,4 +20,7 @@ public class UpdateCompanyRequest {
 
 	@Schema(description = "업체 주소")
 	private String address;
+
+	@Schema(description = "허브 id")
+	private UUID hubId;
 }
