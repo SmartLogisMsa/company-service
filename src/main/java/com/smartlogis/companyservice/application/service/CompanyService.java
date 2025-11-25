@@ -1,5 +1,6 @@
 package com.smartlogis.companyservice.application.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -8,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.smartlogis.common.presentation.dto.PageResponse;
+import com.smartlogis.companyservice.infrastructure.event.publisher.CompanyEventPublisher;
+import com.smartlogis.companyservice.interfaces.dto.event.CompanyOrderCreatedEvent;
+import com.smartlogis.companyservice.interfaces.dto.event.OrderCreatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.request.ChangeCompanyManager;
 import com.smartlogis.companyservice.interfaces.dto.request.CompanySearchCondition;
 import com.smartlogis.companyservice.interfaces.dto.request.CreateCompanyRequest;
@@ -27,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class CompanyService {
 
 	private final CompanyRepository companyRepository;
+	private final CompanyEventPublisher companyEventPublisher;
 
 	//1. 업체 생성
 	@Transactional
@@ -131,5 +136,32 @@ public class CompanyService {
 			.orElseThrow(() -> new CompanyNotFoundException(CompanyCode.CompanyNotFound));
 
 		company.delete();
+	}
+
+	//8. 이벤트 받아서 도착 허브 id 추가
+	@Transactional
+	public void handleOrderCreatedEvent(OrderCreatedEvent event) {
+
+		//수령업체 id로 업체 조회
+		Company company = companyRepository.findById(event.getReceiptCompanyId())
+			.orElseThrow(() -> new CompanyNotFoundException(CompanyCode.CompanyNotFound));
+
+		List<CompanyOrderCreatedEvent.OrderItemDetail> orderItems = event.getOrderItems()
+			.stream()
+			.map(item -> CompanyOrderCreatedEvent.OrderItemDetail.builder()
+				.productId(item.getProductId())
+				.quantity(item.getQuantity())
+				.build())
+			.toList();
+
+		CompanyOrderCreatedEvent companyEvent = CompanyOrderCreatedEvent.builder()
+			.orderId(event.getOrderId())
+			.orderItems(orderItems)
+			.address(event.getAddress())
+			.receiptUserId(event.getReceiptUserId())
+			.destinationHubId(company.getHubId())
+			.build();
+
+		companyEventPublisher.publishToProduct(companyEvent);
 	}
 }

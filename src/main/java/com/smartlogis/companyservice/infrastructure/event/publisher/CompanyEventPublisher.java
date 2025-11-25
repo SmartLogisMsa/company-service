@@ -1,0 +1,25 @@
+package com.smartlogis.companyservice.infrastructure.event.publisher;
+
+import static com.smartlogis.companyservice.infrastructure.config.CompanyRabbitConfig.*;
+
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Component;
+
+import com.smartlogis.companyservice.interfaces.dto.event.CompanyOrderCreatedEvent;
+
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
+public class CompanyEventPublisher {
+
+	private final RabbitTemplate rabbitTemplate;
+
+	public void publishToProduct(CompanyOrderCreatedEvent event) {
+		rabbitTemplate.convertAndSend(
+			COMPANY_ORDER_CREATED_EXCHANGE,
+			COMPANY_ORDER_CREATED_ROUTING_KEY,
+			event
+		);
+	}
+}

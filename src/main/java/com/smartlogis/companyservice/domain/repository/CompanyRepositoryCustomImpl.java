@@ -55,7 +55,7 @@ public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
 			.where(builder)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
-			.orderBy(company.name.asc())
+			.orderBy(company.createdAt.desc())
 			.fetch();
 
 		return new PageImpl<>(content, pageable, total);
