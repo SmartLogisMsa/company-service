@@ -22,6 +22,15 @@ public class CompanyRabbitConfig {
 	public static final String COMPANY_ORDER_CREATED_EXCHANGE = "smartlogis.company.exchange";
 	public static final String COMPANY_ORDER_CREATED_ROUTING_KEY = "smartlogis.company.order.created";
 
+	//허브에서 온 허브 삭제 이벤트
+	public static final String HUB_DELETED_QUEUE = "hub.deleted.company.queue";
+	public static final String HUB_EXCHANGE = "hub.event";
+	public static final String HUB_ROUTING_KEY = "hub.deleted";
+
+	//상품으로 보내는 업체 비활성화 이벤트
+	public static final String COMPANY_INACTIVATED_EXCHANGE = "smartlogis.company.inactivated.exchange";
+	public static final String COMPANY_INACTIVATED_ROUTING_KEY = "smartlogis.company.inactivated";
+
 	@Bean
 	public Queue orderCreatedQueue() {
 		return new Queue(ORDER_CREATED_QUEUE, true);
@@ -33,6 +42,11 @@ public class CompanyRabbitConfig {
 	}
 
 	@Bean
+	public Queue hubDeletedQueue() {
+		return new Queue(HUB_DELETED_QUEUE, true);
+	}
+
+	@Bean
 	public TopicExchange orderExchange() {
 		return new TopicExchange(ORDER_CREATED_EXCHANGE, true,  false);
 	}
@@ -40,6 +54,16 @@ public class CompanyRabbitConfig {
 	@Bean
 	public TopicExchange companyExchange() {
 		return new TopicExchange(COMPANY_ORDER_CREATED_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public TopicExchange hubExchange() {
+		return new TopicExchange(HUB_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public TopicExchange companyInactivatedExchange() {
+		return new TopicExchange(COMPANY_INACTIVATED_EXCHANGE, true, false);
 	}
 
 	@Bean
@@ -54,6 +78,13 @@ public class CompanyRabbitConfig {
 		return BindingBuilder.bind(companyOrderCreatedQueue)
 			.to(companyExchange)
 			.with(COMPANY_ORDER_CREATED_ROUTING_KEY);
+	}
+
+	@Bean
+	public Binding hubDeletedBinding(Queue hubDeletedQueue, TopicExchange hubExchange) {
+		return BindingBuilder.bind(hubDeletedQueue)
+			.to(hubExchange)
+			.with(HUB_ROUTING_KEY);
 	}
 
 	@Bean

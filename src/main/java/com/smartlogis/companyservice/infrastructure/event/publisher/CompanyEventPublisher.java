@@ -5,6 +5,7 @@ import static com.smartlogis.companyservice.infrastructure.config.CompanyRabbitC
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
+import com.smartlogis.companyservice.interfaces.dto.event.CompanyInactivatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyOrderCreatedEvent;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,14 @@ public class CompanyEventPublisher {
 		rabbitTemplate.convertAndSend(
 			COMPANY_ORDER_CREATED_EXCHANGE,
 			COMPANY_ORDER_CREATED_ROUTING_KEY,
+			event
+		);
+	}
+
+	public void publishCompanyInactivated(CompanyInactivatedEvent event) {
+		rabbitTemplate.convertAndSend(
+			COMPANY_INACTIVATED_EXCHANGE,
+			COMPANY_INACTIVATED_ROUTING_KEY,
 			event
 		);
 	}

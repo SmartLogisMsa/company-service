@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.smartlogis.common.presentation.dto.PageResponse;
 import com.smartlogis.companyservice.infrastructure.event.publisher.CompanyEventPublisher;
+import com.smartlogis.companyservice.interfaces.dto.event.CompanyInactivatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyOrderCreatedEvent;
+import com.smartlogis.companyservice.interfaces.dto.event.HubDeletedMessage;
 import com.smartlogis.companyservice.interfaces.dto.event.OrderCreatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.request.ChangeCompanyManager;
 import com.smartlogis.companyservice.interfaces.dto.request.CompanySearchCondition;
@@ -136,6 +138,11 @@ public class CompanyService {
 			.orElseThrow(() -> new CompanyNotFoundException(CompanyCode.CompanyNotFound));
 
 		company.delete();
+
+		//삭제된 업체의 상품도 비활성화하는 이벤트
+		CompanyInactivatedEvent message = new CompanyInactivatedEvent(company.getId());
+
+		companyEventPublisher.publishCompanyInactivated(message);
 	}
 
 	//8. 이벤트 받아서 도착 허브 id 추가
@@ -163,5 +170,25 @@ public class CompanyService {
 			.build();
 
 		companyEventPublisher.publishToProduct(companyEvent);
+	}
+
+	//9. 허브 삭제 이벤트 처리
+	@Transactional
+	public void handleHubDeleted(HubDeletedMessage event) {
+
+		UUID hubId = event.hubId();
+
+		//해당 허브 id 가진 업체 조회해서 모조리 inactive로 바꾸기
+		List<Company> companies = companyRepository.findAllByHubId(hubId);
+
+		//업체 비활성화
+		companies.forEach(Company::inactivate);
+
+		//상품도 비활성화하는 이벤트 발행
+		companies.forEach(company -> {
+			CompanyInactivatedEvent message = new CompanyInactivatedEvent(company.getId());
+
+			companyEventPublisher.publishCompanyInactivated(message);
+		});
 	}
 }
