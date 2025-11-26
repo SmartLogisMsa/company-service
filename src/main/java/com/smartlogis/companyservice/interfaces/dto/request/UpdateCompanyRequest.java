@@ -15,12 +15,12 @@ import lombok.Setter;
 @Schema(description = "업체 정보 수정 요청")
 public class UpdateCompanyRequest {
 
-	@Schema(description = "업체명")
+	@Schema(description = "업체명", example = "클럽 스파르타")
 	private String name;
 
-	@Schema(description = "업체 주소")
+	@Schema(description = "업체 주소", example = "서울특별시 강남구 도곡로")
 	private String address;
 
-	@Schema(description = "허브 id")
+	@Schema(description = "허브 id", example = "a1b2c3d4-e5f6-7890-abcd-ef0123456789")
 	private UUID hubId;
 }

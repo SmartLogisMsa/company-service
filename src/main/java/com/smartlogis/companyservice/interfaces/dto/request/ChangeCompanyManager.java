@@ -15,6 +15,6 @@ import lombok.Setter;
 @Schema(description = "담당 매니저 변경 요청")
 public class ChangeCompanyManager {
 
-	@Schema(description = "담당 매니저 id")
+	@Schema(description = "담당 매니저 id", example = "a1b2c3d4-e5f6-7890-abcd-ef0123456789", nullable = false)
 	private UUID managerId;
 }
