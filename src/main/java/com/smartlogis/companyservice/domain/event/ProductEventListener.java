@@ -22,7 +22,5 @@ public class ProductEventListener {
 		log.info("[재고부족] 이벤트 수신: {}", event);
 
 		companyService.processLowStock(event);
-
-		log.info("[재고보충] 이벤트 발행");
 	}
 }

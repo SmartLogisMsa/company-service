@@ -22,7 +22,5 @@ public class OrderEventListener {
 		log.info("[주문 생성] 이벤트 받음 {}", event);
 
 		companyService.handleOrderCreatedEvent(event);
-
-		log.info("상품에 대해 이벤트 생성 {}", event);
 	}
 }

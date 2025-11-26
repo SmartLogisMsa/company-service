@@ -31,7 +31,9 @@ import com.smartlogis.companyservice.domain.exception.CompanyNotFoundException;
 import com.smartlogis.companyservice.domain.repository.CompanyRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
@@ -198,6 +200,7 @@ public class CompanyService {
 			.build();
 
 		companyEventPublisher.publishToProduct(companyEvent);
+		log.info("상품에 대해 이벤트 생성 {}", companyEvent);
 	}
 
 	//9. 허브 삭제 이벤트 처리
@@ -218,6 +221,7 @@ public class CompanyService {
 
 			companyEventPublisher.publishCompanyInactivated(message);
 		});
+		log.info("삭제된 허브 소속 업체 비활성화 성공");
 	}
 
 	//10. 재고 이벤트 처리
@@ -234,5 +238,6 @@ public class CompanyService {
 			requiredQuantity
 		);
 		companyEventPublisher.publishReplenishStock(message);
+		log.info("[재고보충] 이벤트 발행");
 	}
 }
