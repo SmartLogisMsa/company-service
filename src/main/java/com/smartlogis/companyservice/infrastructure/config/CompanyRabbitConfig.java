@@ -39,6 +39,14 @@ public class CompanyRabbitConfig {
 	public static final String COMPANY_HUB_CHANGED_EXCHANGE = "smartlogis.company.hubId.changed.exchange";
 	public static final String COMPANY_HUB_CHANGED_ROUTING_KEY = "smartlogis.company.hubId.changed";
 
+	//상품에서 온 재고 부족 이벤트
+	public static final String PRODUCT_LOW_STOCK_QUEUE = "smartlogis.product.low.stock.queue";
+	public static final String PRODUCT_LOW_STOCK_EXCHANGE = "smartlogis.product.low.stock.exchange";
+	public static final String PRODUCT_LOW_STOCK_ROUTING_KEY = "smartlogis.product.low.stock";
+
+	//재고 보충 이벤트
+	public static final String COMPANY_REPLENISH_STOCK_EXCHANGE = "smartlogis.company.replenish.stock.exchange";
+	public static final String COMPANY_REPLENISH_STOCK_ROUTING_KEY = "smartlogis.company.replenish.stock";
 
 	@Bean
 	public Queue orderCreatedQueue() {
@@ -53,6 +61,10 @@ public class CompanyRabbitConfig {
 	@Bean
 	public Queue hubDeletedQueue() {
 		return new Queue(HUB_DELETED_QUEUE, true);
+	}
+
+	@Bean Queue productLowStockQueue() {
+		return new Queue(PRODUCT_LOW_STOCK_QUEUE, true);
 	}
 
 	@Bean
@@ -86,6 +98,15 @@ public class CompanyRabbitConfig {
 	}
 
 	@Bean
+	public TopicExchange productLowStockExchange() {
+		return new TopicExchange(PRODUCT_LOW_STOCK_EXCHANGE, true, false);
+	}
+
+	@Bean TopicExchange companyReplenishExchange() {
+		return new TopicExchange(COMPANY_REPLENISH_STOCK_EXCHANGE, true, false);
+	}
+
+	@Bean
 	public Binding orderCreatedBinding(Queue orderCreatedQueue, TopicExchange orderExchange) {
 		return BindingBuilder.bind(orderCreatedQueue)
 			.to(orderExchange)
@@ -104,6 +125,13 @@ public class CompanyRabbitConfig {
 		return BindingBuilder.bind(hubDeletedQueue)
 			.to(hubExchange)
 			.with(HUB_ROUTING_KEY);
+	}
+
+	@Bean
+	public Binding productLowStockBinding(Queue productLowStockQueue, TopicExchange productLowStockExchange) {
+		return BindingBuilder.bind(productLowStockQueue)
+			.to(productLowStockExchange)
+			.with(PRODUCT_LOW_STOCK_ROUTING_KEY);
 	}
 
 	@Bean

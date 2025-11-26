@@ -15,7 +15,9 @@ import com.smartlogis.companyservice.interfaces.dto.event.CompanyInactivatedEven
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyOrderCreatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyStatusChangedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.HubDeletedMessage;
+import com.smartlogis.companyservice.interfaces.dto.event.LowStockEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.OrderCreatedEvent;
+import com.smartlogis.companyservice.interfaces.dto.event.StockReplenishedEvent;
 import com.smartlogis.companyservice.interfaces.dto.request.ChangeCompanyManager;
 import com.smartlogis.companyservice.interfaces.dto.request.CompanySearchCondition;
 import com.smartlogis.companyservice.interfaces.dto.request.CreateCompanyRequest;
@@ -216,5 +218,21 @@ public class CompanyService {
 
 			companyEventPublisher.publishCompanyInactivated(message);
 		});
+	}
+
+	//10. 재고 이벤트 처리
+	@Transactional
+	public void processLowStock(LowStockEvent event) {
+		UUID productId = event.productId();
+		UUID companyId = event.companyId();
+		int requiredQuantity = event.requiredQuantity();
+
+		//이벤트 발행
+		StockReplenishedEvent message = new StockReplenishedEvent(
+			productId,
+			companyId,
+			requiredQuantity
+		);
+		companyEventPublisher.publishReplenishStock(message);
 	}
 }

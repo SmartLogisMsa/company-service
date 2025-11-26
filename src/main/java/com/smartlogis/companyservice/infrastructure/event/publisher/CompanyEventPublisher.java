@@ -9,6 +9,7 @@ import com.smartlogis.companyservice.interfaces.dto.event.CompanyHubChangeEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyInactivatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyOrderCreatedEvent;
 import com.smartlogis.companyservice.interfaces.dto.event.CompanyStatusChangedEvent;
+import com.smartlogis.companyservice.interfaces.dto.event.StockReplenishedEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,6 +47,14 @@ public class CompanyEventPublisher {
 		rabbitTemplate.convertAndSend(
 			COMPANY_HUB_CHANGED_EXCHANGE,
 			COMPANY_HUB_CHANGED_ROUTING_KEY,
+			event
+		);
+	}
+
+	public void publishReplenishStock(StockReplenishedEvent event) {
+		rabbitTemplate.convertAndSend(
+			COMPANY_REPLENISH_STOCK_EXCHANGE,
+			COMPANY_REPLENISH_STOCK_ROUTING_KEY,
 			event
 		);
 	}
