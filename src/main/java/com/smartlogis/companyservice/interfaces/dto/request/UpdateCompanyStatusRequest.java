@@ -15,6 +15,6 @@ import lombok.Setter;
 @Schema(description = "업체 상태 변경 요청")
 public class UpdateCompanyStatusRequest {
 
-	@Schema(description = "업체 상태")
+	@Schema(description = "업체 상태", example = "ACTIVE")
 	private CompanyStatus status;
 }

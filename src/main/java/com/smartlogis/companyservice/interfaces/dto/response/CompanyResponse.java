@@ -21,25 +21,25 @@ import lombok.Setter;
 @Schema(description = "업체 생성 요청 응답")
 public class CompanyResponse {
 
-	@Schema(description = "업체 id")
+	@Schema(description = "업체 id", example = "a1b2c3d4-e5f6-7890-abcd-ef0123456789")
 	private UUID id;
 
-	@Schema(description = "업체명")
+	@Schema(description = "업체명", example = "스파르타서울")
 	private String name;
 
-	@Schema(description = "업체 타입(생산/수령)")
+	@Schema(description = "업체 타입(생산/수령)", example = "SUPPLIER")
 	private CompanyType type;
 
-	@Schema(description = "담당 허브 id")
+	@Schema(description = "담당 허브 id", example = "a1b2c3d4-e5f6-7890-abcd-ef0123456789")
 	private UUID hubId;
 
-	@Schema(description = "업체 주소")
+	@Schema(description = "업체 주소", example = "서울특별시 강남구 도곡로")
 	private String address;
 
-	@Schema(description = "업체 상태")
+	@Schema(description = "업체 상태", example = "ACTIVE")
 	private CompanyStatus status;
 
-	@Schema(description = "담당 매니저 id")
+	@Schema(description = "담당 매니저 id", example = "a1b2c3d4-e5f6-7890-abcd-ef0123456789")
 	private UUID managerId;
 
 	public static CompanyResponse of(Company company) {

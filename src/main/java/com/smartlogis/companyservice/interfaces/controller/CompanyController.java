@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,7 +32,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/companies")
 @RequiredArgsConstructor
 @Tag(name = "업체", description = "업체 관련 API")
 public class CompanyController {
@@ -41,7 +41,7 @@ public class CompanyController {
 	//1. 업체 생성
 	@PostMapping("")
 	@Operation(summary = "새 업체 생성", description = "새로운 업체를 생성합니다.")
-	// @PreAuthorize("hasRole('MASTER') or hasRole('HUB_MANAGER')")
+	@PreAuthorize("hasRole('MASTER') or hasRole('HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<CompanyResponse>> createCompany(
 		@RequestBody @Valid CreateCompanyRequest request
 	){
@@ -73,7 +73,7 @@ public class CompanyController {
 	//4. 업체 정보 수정
 	@PutMapping("/{id}")
 	@Operation(summary = "업체 정보 수정", description = "업체 정보를 수정합니다.")
-	// @PreAuthorize("hasRole('MASTER') or hasRole('HUB_MANAGER') or hasRole('COMPANY_MANAGER')")
+	@PreAuthorize("hasRole('MASTER') or hasRole('HUB_MANAGER') or hasRole('COMPANY_MANAGER')")
 	public ResponseEntity<ApiResponse<CompanyResponse>> updateCompany(
 		@PathVariable UUID id,
 		@RequestBody @Valid UpdateCompanyRequest request
@@ -85,7 +85,7 @@ public class CompanyController {
 	//5. 업체 상태 수정
 	@PatchMapping("/{id}/status")
 	@Operation(summary = "업체 상태 수정", description = "업체 상태를 ACTIVE/INACTIVE로 수정합니다.")
-	// @PreAuthorize("hasRole('MASTER') or hasRole('HUB_MANAGER') or hasRole('COMPANY_MANAGER')")
+	@PreAuthorize("hasRole('MASTER') or hasRole('HUB_MANAGER') or hasRole('COMPANY_MANAGER')")
 	public ResponseEntity<ApiResponse<CompanyResponse>> updateStatus(
 		@PathVariable UUID id,
 		@RequestBody @Valid UpdateCompanyStatusRequest request
@@ -97,7 +97,7 @@ public class CompanyController {
 	//6. 업체 담당자 변경
 	@PatchMapping("/{id}/manager")
 	@Operation(summary = "업체 담당 매니저 변경", description = "업체 매니저를 변경합니다.")
-	// @PreAuthorize("hasRole('MASTER')")
+	@PreAuthorize("hasRole('MASTER')")
 	public ResponseEntity<ApiResponse<CompanyResponse>> updateManager(
 		@PathVariable UUID id,
 		@RequestBody @Valid ChangeCompanyManager request
@@ -109,7 +109,7 @@ public class CompanyController {
 	//7. 업체 삭제
 	@DeleteMapping("/{id}")
 	@Operation(summary = "업체 삭제", description = "하나의 업체를 삭제합니다.")
-	// @PreAuthorize("hasRole('MASTER') or hasRole('HUB_MANAGER')")
+	@PreAuthorize("hasRole('MASTER') or hasRole('HUB_MANAGER')")
 	public ResponseEntity<ApiResponse<Void>> deleteCompany(
 		@PathVariable UUID id
 	){

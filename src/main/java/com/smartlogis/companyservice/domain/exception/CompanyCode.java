@@ -4,6 +4,9 @@ import org.springframework.http.HttpStatus;
 
 import com.smartlogis.common.exception.MessageCode;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "업체 관련 에러 코드")
 public enum CompanyCode implements MessageCode {
 	INVALID_NAME("COMPANY.INVALID_NAME", HttpStatus.BAD_REQUEST),
 	INVALID_STATUS("COMPANY.INVALID_STATUS", HttpStatus.BAD_REQUEST),

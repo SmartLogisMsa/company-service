@@ -1,0 +1,141 @@
+package com.smartlogis.companyservice.infrastructure.config;
+
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class CompanyRabbitConfig {
+
+	//주문 생성 이벤트
+	public static final String ORDER_CREATED_QUEUE = "smartlogis.order.created.queue";
+	public static final String ORDER_CREATED_EXCHANGE = "smartlogis.order.exchange";
+	public static final String ORDER_CREATED_ROUTING_KEY = "smartlogis.order.created";
+
+	//업체에서 발행하는 상품 대상 이벤트
+	public static final String COMPANY_ORDER_CREATED_QUEUE = "smartlogis.company.order.created.queue";
+	public static final String COMPANY_ORDER_CREATED_EXCHANGE = "smartlogis.company.exchange";
+	public static final String COMPANY_ORDER_CREATED_ROUTING_KEY = "smartlogis.company.order.created";
+
+	//허브에서 온 허브 삭제 이벤트
+	public static final String HUB_DELETED_QUEUE = "hub.deleted.company.queue";
+	public static final String HUB_EXCHANGE = "hub.event";
+	public static final String HUB_ROUTING_KEY = "hub.deleted";
+
+	//상품으로 보내는 업체 비활성화 이벤트
+	public static final String COMPANY_INACTIVATED_EXCHANGE = "smartlogis.company.inactivated.exchange";
+	public static final String COMPANY_INACTIVATED_ROUTING_KEY = "smartlogis.company.inactivated";
+
+	//업체 상태 변경 이벤트
+	public static final String COMPANY_STATUS_CHANGED_EXCHANGE = "smartlogis.company.status.changed.exchange";
+	public static final String COMPANY_STATUS_CHANGED_ROUTING_KEY = "smartlogis.company.status.changed";
+
+	//업체 허브 변경 이벤트
+	public static final String COMPANY_HUB_CHANGED_EXCHANGE = "smartlogis.company.hubId.changed.exchange";
+	public static final String COMPANY_HUB_CHANGED_ROUTING_KEY = "smartlogis.company.hubId.changed";
+
+	//상품에서 온 재고 부족 이벤트
+	public static final String PRODUCT_LOW_STOCK_QUEUE = "smartlogis.product.low.stock.queue";
+	public static final String PRODUCT_LOW_STOCK_EXCHANGE = "smartlogis.product.low.stock.exchange";
+	public static final String PRODUCT_LOW_STOCK_ROUTING_KEY = "smartlogis.product.low.stock";
+
+	//재고 보충 이벤트
+	public static final String COMPANY_REPLENISH_STOCK_EXCHANGE = "smartlogis.company.replenish.stock.exchange";
+	public static final String COMPANY_REPLENISH_STOCK_ROUTING_KEY = "smartlogis.company.replenish.stock";
+
+	@Bean
+	public Queue orderCreatedQueue() {
+		return new Queue(ORDER_CREATED_QUEUE, true);
+	}
+
+	@Bean
+	public Queue companyOrderCreatedQueue() {
+		return new Queue(COMPANY_ORDER_CREATED_QUEUE, true);
+	}
+
+	@Bean
+	public Queue hubDeletedQueue() {
+		return new Queue(HUB_DELETED_QUEUE, true);
+	}
+
+	@Bean Queue productLowStockQueue() {
+		return new Queue(PRODUCT_LOW_STOCK_QUEUE, true);
+	}
+
+	@Bean
+	public TopicExchange orderExchange() {
+		return new TopicExchange(ORDER_CREATED_EXCHANGE, true,  false);
+	}
+
+	@Bean
+	public TopicExchange companyExchange() {
+		return new TopicExchange(COMPANY_ORDER_CREATED_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public TopicExchange hubExchange() {
+		return new TopicExchange(HUB_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public TopicExchange companyInactivatedExchange() {
+		return new TopicExchange(COMPANY_INACTIVATED_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public TopicExchange companyStatusChangedExchange() {
+		return new TopicExchange(COMPANY_STATUS_CHANGED_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public TopicExchange companyHubChangedExchange() {
+		return new TopicExchange(COMPANY_HUB_CHANGED_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public TopicExchange productLowStockExchange() {
+		return new TopicExchange(PRODUCT_LOW_STOCK_EXCHANGE, true, false);
+	}
+
+	@Bean TopicExchange companyReplenishExchange() {
+		return new TopicExchange(COMPANY_REPLENISH_STOCK_EXCHANGE, true, false);
+	}
+
+	@Bean
+	public Binding orderCreatedBinding(Queue orderCreatedQueue, TopicExchange orderExchange) {
+		return BindingBuilder.bind(orderCreatedQueue)
+			.to(orderExchange)
+			.with(ORDER_CREATED_ROUTING_KEY);
+	}
+
+	@Bean
+	public Binding companyOrderCreatedBinding(Queue companyOrderCreatedQueue, TopicExchange companyExchange) {
+		return BindingBuilder.bind(companyOrderCreatedQueue)
+			.to(companyExchange)
+			.with(COMPANY_ORDER_CREATED_ROUTING_KEY);
+	}
+
+	@Bean
+	public Binding hubDeletedBinding(Queue hubDeletedQueue, TopicExchange hubExchange) {
+		return BindingBuilder.bind(hubDeletedQueue)
+			.to(hubExchange)
+			.with(HUB_ROUTING_KEY);
+	}
+
+	@Bean
+	public Binding productLowStockBinding(Queue productLowStockQueue, TopicExchange productLowStockExchange) {
+		return BindingBuilder.bind(productLowStockQueue)
+			.to(productLowStockExchange)
+			.with(PRODUCT_LOW_STOCK_ROUTING_KEY);
+	}
+
+	@Bean
+	public MessageConverter jsonMessageConverter() {
+		return new Jackson2JsonMessageConverter();
+	}
+}
