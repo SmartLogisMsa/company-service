@@ -31,7 +31,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/companies")
 @RequiredArgsConstructor
 @Tag(name = "업체", description = "업체 관련 API")
 public class CompanyController {
